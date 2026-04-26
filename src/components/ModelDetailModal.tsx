@@ -1,8 +1,9 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { BadgeInfo, BookOpen, ChevronDown, Tags, X } from "lucide-react";
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { HarleyModel } from "../types/harley";
+import { getModelImageCandidates, useRefreshImage } from "../utils/images";
 import { getProductionYearsLabel } from "../utils/timeline";
 import EngineBadge from "./EngineBadge";
 import ImageGallery from "./ImageGallery";
@@ -17,6 +18,8 @@ type ModelDetailModalProps = {
 };
 
 export default function ModelDetailModal({ allModels, model, onClose, onOpenRelated }: ModelDetailModalProps) {
+  const detailImageCandidates = useMemo(() => (model ? getModelImageCandidates(model) : []), [model]);
+  const [detailImageUrl] = useRefreshImage(detailImageCandidates);
   const relatedModels = model?.relatedModels
     ?.map((id) => allModels.find((item) => item.id === id))
     .filter((item): item is HarleyModel => Boolean(item));
@@ -55,7 +58,8 @@ export default function ModelDetailModal({ allModels, model, onClose, onOpenRela
                 imageCredit={model.imageCredit}
                 imageLicense={model.imageLicense}
                 imageSourceUrl={model.imageSourceUrl}
-                imageUrl={model.imageUrl}
+                imageUrl={detailImageUrl}
+                imageUrls={detailImageCandidates}
                 modelName={model.name}
                 spin360={model.spin360}
               />

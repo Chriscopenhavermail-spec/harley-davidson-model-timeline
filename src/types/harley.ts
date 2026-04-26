@@ -88,6 +88,7 @@ export type HarleyModel = {
   keyCharacteristics: string[];
   characteristicDetails?: Record<string, string>;
   imageUrl?: string;
+  imageUrls?: string[];
   imageCredit?: string;
   imageLicense?: string;
   imageSourceUrl?: string;

@@ -50,6 +50,24 @@ const familyColors: Record<ModelFamily, string> = {
   Other: "#a8a29e",
 };
 
+const familyDescriptions: Record<ModelFamily, string> = {
+  "Early Models": "Pioneer machines with bicycle-derived frames, exposed mechanical systems, belt or chain drive, and the first Harley-Davidson singles and early V-twins.",
+  Military: "Utility-focused motorcycles adapted for service use, with durable flathead power, field equipment, blackout details, racks, and rugged simplicity.",
+  "Big Twin": "Large-displacement Harley-Davidson V-twins that anchor the classic heavyweight identity: torque, road presence, and landmark engine generations.",
+  Sportster: "Narrower, lighter Harley platforms with compact proportions, strong customization culture, and a more elemental rider-machine feel.",
+  Dyna: "Rubber-mounted big-twin cruisers known for exposed twin shocks, responsive chassis feel, and a deep performance-custom culture.",
+  Softail: "Cruisers with hidden rear suspension that preserve hardtail-style lines while carrying modern big-twin engines and factory custom design.",
+  Touring: "Long-distance FL-platform motorcycles with luggage, fairings, comfort equipment, audio, wind protection, and highway stability.",
+  CVO: "Factory premium customs with higher-spec finishes, larger engines, special paint, limited-production equipment, and flagship trim.",
+  "V-Rod": "Liquid-cooled Revolution-engine performance cruisers with long, low stance, modern frames, and a break from air-cooled tradition.",
+  Street: "Smaller-displacement urban Harley models aimed at accessible riding, liquid cooling, and lighter city-focused packaging.",
+  "Adventure Touring": "Tall, long-travel motorcycles built for mixed-surface travel, upright ergonomics, rider aids, and Revolution Max power.",
+  Trike: "Three-wheel touring machines emphasizing stability, passenger comfort, trunk storage, and full-dress touring equipment.",
+  Electric: "Battery-electric Harley and LiveWire models defined by instant torque, quiet operation, connected tech, and urban performance.",
+  Racing: "Competition-oriented Harley-Davidson machines shaped by speed, weight reduction, specialized engines, and track-specific purpose.",
+  Other: "Models or experiments that do not fit neatly into the larger production families.",
+};
+
 export default function ProductionOverviewChart({ models, onViewDetails }: ProductionOverviewChartProps) {
   const [collapsedFamilies, setCollapsedFamilies] = useState<Set<ModelFamily>>(new Set());
   const endYear = Math.max(CURRENT_YEAR, ...models.map((model) => getComparableEndYear(model.productionEndYear)));
@@ -127,9 +145,10 @@ export default function ProductionOverviewChart({ models, onViewDetails }: Produ
                   <div className="flex h-10 border-b border-brass-400/12 bg-black/18">
                     <button
                       aria-expanded={!collapsedFamilies.has(group.family)}
-                      className="sticky left-0 z-10 flex items-center gap-2 border-r border-brass-400/12 bg-iron-900 px-4 text-left text-xs font-bold uppercase text-parchment-100 transition hover:bg-brass-400/10 hover:text-brass-300"
+                      className="group/family sticky left-0 z-10 flex items-center gap-2 border-r border-brass-400/12 bg-iron-900 px-4 text-left text-xs font-bold uppercase text-parchment-100 transition hover:bg-brass-400/10 hover:text-brass-300"
                       onClick={() => toggleFamily(group.family)}
                       style={{ width: LABEL_WIDTH }}
+                      title={familyDescriptions[group.family]}
                       type="button"
                     >
                       <ChevronDown
@@ -139,6 +158,10 @@ export default function ProductionOverviewChart({ models, onViewDetails }: Produ
                       <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: familyColors[group.family] }} />
                       <span className="truncate">{group.family}</span>
                       <span className="ml-auto text-[10px] text-parchment-200/45">{group.models.length}</span>
+                      <span className="pointer-events-none absolute left-3 top-9 z-40 hidden w-72 rounded-md border border-brass-400/30 bg-iron-950 p-3 text-xs normal-case leading-5 text-parchment-100 shadow-museum group-hover/family:block group-focus/family:block">
+                        <strong className="mb-1 block font-display text-base text-brass-300">{group.family}</strong>
+                        {familyDescriptions[group.family]}
+                      </span>
                     </button>
                     <div className="relative" style={{ width: chartWidth }}>
                       <GridLines ticks={decadeTicks} />

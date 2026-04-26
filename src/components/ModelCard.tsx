@@ -1,6 +1,7 @@
 import { CalendarDays, Eye, Plus, Scale, X } from "lucide-react";
 import { motion } from "framer-motion";
 import type { HarleyModel } from "../types/harley";
+import { getModelImageCandidates, useRefreshImage } from "../utils/images";
 import { getProductionYearsLabel } from "../utils/timeline";
 import EngineBadge from "./EngineBadge";
 
@@ -20,6 +21,7 @@ export default function ModelCard({
   onViewDetails,
 }: ModelCardProps) {
   const canCompare = isCompared || !compareDisabled;
+  const [imageUrl, markImageFailed] = useRefreshImage(getModelImageCandidates(model));
 
   return (
     <motion.article
@@ -30,8 +32,13 @@ export default function ModelCard({
       transition={{ duration: 0.28 }}
     >
       <button className="relative block aspect-[16/9] overflow-hidden text-left" onClick={() => onViewDetails(model)} type="button">
-        {model.imageUrl ? (
-          <img alt={model.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" src={model.imageUrl} />
+        {imageUrl ? (
+          <img
+            alt={model.name}
+            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+            onError={markImageFailed}
+            src={imageUrl}
+          />
         ) : (
           <div className="motorcycle-placeholder h-full w-full">
             <span>{model.modelFamily}</span>

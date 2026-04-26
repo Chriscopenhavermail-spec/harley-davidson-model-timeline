@@ -2,10 +2,12 @@ import { ChevronLeft, ChevronRight, Pause, Play, RotateCcw } from "lucide-react"
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
 import type { Spin360Asset } from "../types/harley";
+import { useRefreshImage } from "../utils/images";
 
 type Spin360ViewerProps = {
   modelName: string;
   imageUrl?: string;
+  imageUrls?: string[];
   imageCredit?: string;
   imageLicense?: string;
   imageSourceUrl?: string;
@@ -17,17 +19,19 @@ export default function Spin360Viewer({
   imageLicense,
   imageSourceUrl,
   imageUrl,
+  imageUrls,
   modelName,
   spin360,
 }: Spin360ViewerProps) {
   const frames = useMemo(() => (spin360?.available && spin360.frames?.length ? spin360.frames : []), [spin360]);
   const hasFrames = frames.length > 0;
+  const [staticImageUrl, markStaticImageFailed] = useRefreshImage(imageUrls?.length ? imageUrls : imageUrl ? [imageUrl] : []);
   const [currentFrameIndex, setCurrentFrameIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState<number | null>(null);
   const [isAutoplaying, setIsAutoplaying] = useState(false);
 
-  const activeImage = hasFrames ? frames[currentFrameIndex] : imageUrl;
+  const activeImage = hasFrames ? frames[currentFrameIndex] : staticImageUrl;
 
   const step = (direction: 1 | -1) => {
     if (!hasFrames) {
@@ -79,7 +83,7 @@ export default function Spin360Viewer({
         }}
       >
         {activeImage ? (
-          <img alt={modelName} className="h-full w-full object-cover" draggable={false} src={activeImage} />
+          <img alt={modelName} className="h-full w-full object-cover" draggable={false} onError={markStaticImageFailed} src={activeImage} />
         ) : (
           <div className="motorcycle-placeholder h-full w-full">
             <span>Motorcycle image not yet added</span>

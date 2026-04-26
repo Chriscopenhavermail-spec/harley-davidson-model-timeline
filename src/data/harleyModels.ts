@@ -9,7 +9,7 @@ const noSpin = {
 const starterNote =
   "Starter dataset entry. Verify exact year, trim, and market details before publication.";
 
-type ImageAsset = Pick<HarleyModel, "imageUrl" | "imageCredit" | "imageLicense" | "imageSourceUrl">;
+type ImageAsset = Pick<HarleyModel, "imageUrl" | "imageUrls" | "imageCredit" | "imageLicense" | "imageSourceUrl">;
 
 const commonsImage = (fileName: string) =>
   `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(fileName)}?width=1400`;
@@ -24,6 +24,14 @@ const commonsAsset = (fileName: string, credit: string, license: string): ImageA
   imageSourceUrl: commonsSource(fileName),
 });
 
+const commonsAssets = (fileNames: string[], credit: string, license: string): ImageAsset => ({
+  imageUrl: commonsImage(fileNames[0]),
+  imageUrls: fileNames.map(commonsImage),
+  imageCredit: credit,
+  imageLicense: license,
+  imageSourceUrl: commonsSource(fileNames[0]),
+});
+
 const imageAssets: Record<string, ImageAsset> = {
   "model-1": commonsAsset(
     "Harley-Davidson Museum Serial Number One cropped.jpg",
@@ -33,12 +41,26 @@ const imageAssets: Record<string, ImageAsset> = {
   "model-j": commonsAsset("Harley Davidson Modell J, 1917.jpg", "Zweiradmuseum Neckarsulm", "CC license; see source page"),
   jd: commonsAsset("Harley-Davidson Model 20-J (1920).jpg", "Harley-Davidson", "Public domain in the United States"),
   wla: commonsAsset("Harley Davidson WLA 750cc (1942).jpg", "Wikimedia Commons contributor", "Wikimedia Commons; see source page"),
-  "el-knucklehead": commonsAsset(
-    "Harley-Davidson Museum April 2024 25 (1936 EL Knucklehead--OHV V-Twin).jpg",
-    "Wikimedia Commons contributor",
-    "Wikimedia Commons; see source page",
+  "el-knucklehead": commonsAssets(
+    [
+      "Harley-Davidson Museum December 2023 48 (1936 EL--OHV V-Twin).jpg",
+      "Harley-Davidson Museum December 2023 46 (1936 EL--OHV V-Twin).jpg",
+      "Harley Davidson Knucklehead (23969680887).jpg",
+      "1946 Harley Knucklehead bobber (6842571943).jpg",
+    ],
+    "Michael Barera and Wikimedia Commons contributors",
+    "CC BY-SA 4.0 and other Commons licenses; see source page",
   ),
-  "hydra-glide": commonsAsset("Harley-Davidson FL Hydra-Glide 01.jpg", "Huhu Uet", "CC BY 3.0"),
+  "hydra-glide": commonsAssets(
+    [
+      "Harley-Davidson Museum April 2024 27 (1949 FL Hydra-Glide--OHV V-Twin).jpg",
+      "Harley-Davidson FL Hydra-Glide 01.jpg",
+      "Harley Davidson FL Hydra-Glide 1949 RSide Lake Mirror Cassic 16Oct2010 (14690621148).jpg",
+      "Harley Davidson FL Hydra-Glide 1949 RSideFront Lake Mirror Cassic 16Oct2010 (14877219855).jpg",
+    ],
+    "Michael Barera, Huhu Uet, Valder137",
+    "CC BY-SA 4.0, CC BY 3.0, and Commons licenses; see source page",
+  ),
   "duo-glide": commonsAsset("Harley-Davidson Duo Glide 1961.jpg", "Piero at Dutch Wikipedia", "Free media; see source page"),
   "electra-glide": commonsAsset("Harley Davidson FLHT Electra Glide.jpg", "Callmeace", "CC BY-SA 4.0"),
   "xl-sportster": commonsAsset("1957 Harley-Davidson XL Sportster.jpg", "Wikimedia Commons contributor", "Wikimedia Commons; see source page"),
