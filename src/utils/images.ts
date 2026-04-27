@@ -11,7 +11,16 @@ export function useRefreshImage(candidates: string[]): [string | undefined, () =
       return 0;
     }
 
-    return Math.floor(Math.random() * candidates.length);
+    if (typeof window === "undefined") {
+      return 0;
+    }
+
+    const storageKey = `harley-image-index:${hashCandidates(candidates)}`;
+    const previousIndex = Number(window.localStorage.getItem(storageKey) ?? "-1");
+    const nextIndex = Number.isFinite(previousIndex) ? (previousIndex + 1) % candidates.length : 0;
+    window.localStorage.setItem(storageKey, String(nextIndex));
+
+    return nextIndex;
   }, [candidates.join("|")]);
   const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
   const availableCandidates = candidates.filter((candidate) => !failedImages.has(candidate));
@@ -26,4 +35,15 @@ export function useRefreshImage(candidates: string[]): [string | undefined, () =
   };
 
   return [image, markFailed];
+}
+
+function hashCandidates(candidates: string[]): string {
+  const value = candidates.join("|");
+  let hash = 0;
+
+  for (let index = 0; index < value.length; index += 1) {
+    hash = (hash * 31 + value.charCodeAt(index)) >>> 0;
+  }
+
+  return hash.toString(36);
 }

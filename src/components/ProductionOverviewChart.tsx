@@ -235,6 +235,17 @@ function ChartRow({
               background: `linear-gradient(90deg, ${color}, ${color}bb)`,
             }}
           />
+          <span
+            className="pointer-events-none absolute top-1/2 z-10 -translate-y-1/2 truncate rounded-full px-2 py-0.5 text-[11px] font-bold shadow-sm"
+            style={{
+              left: barWidth > 92 ? 8 : barWidth + 8,
+              maxWidth: barWidth > 92 ? Math.max(64, barWidth - 16) : 130,
+              backgroundColor: barWidth > 92 ? "transparent" : "rgba(9, 8, 7, 0.78)",
+              color: barWidth > 92 ? "#090807" : "#f6ead4",
+            }}
+          >
+            {model.name}
+          </span>
           <span className="pointer-events-none absolute bottom-7 left-0 z-30 hidden w-60 rounded-md border border-brass-400/30 bg-iron-950 p-3 text-xs leading-5 text-parchment-100 shadow-museum group-hover/bar:block">
             <strong className="block font-display text-base text-brass-300">{model.name}</strong>
             <span className="block">{getProductionYearsLabel(model)}</span>
